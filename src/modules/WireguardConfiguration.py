@@ -704,8 +704,8 @@ class WireguardConfiguration:
                     AllPeerShareLinks.updateLinkExpireDate(shareLink.ShareID, datetime.now())
                 if found:
                     try:
-                        subprocess.check_output(f"{self.Protocol} set {self.Name} peer {pf.id} remove",
-                                                shell=True, stderr=subprocess.STDOUT)
+                        command = [self.Protocol, "set", self.Name, "peer", pf.id, "remove"]
+                        subprocess.check_output(command, stderr=subprocess.STDOUT)
                         conn.execute(
                             self.peersTable.delete().where(
                                 self.peersTable.columns.id == pf.id
@@ -747,7 +747,7 @@ class WireguardConfiguration:
             self.toggleConfiguration()
         try:
             command = [self.Protocol, "show", self.Name, "latest-handshakes"]
-            latestHandshake = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
+            latestHandshake = subprocess.check_output(command, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError:
             return "stopped"
         latestHandshake = latestHandshake.decode("UTF-8").split()
@@ -845,7 +845,7 @@ class WireguardConfiguration:
             self.toggleConfiguration()
         try:
             command = [self.Protocol, "show", self.Name, "endpoints"]
-            data_usage = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
+            data_usage = subprocess.check_output(command, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError:
             return "stopped"
         data_usage = data_usage.decode("UTF-8").split()
